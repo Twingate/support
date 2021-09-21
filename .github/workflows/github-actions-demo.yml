@@ -1,0 +1,26 @@
+name: Twingate on GitHub Actions Demo
+on: [push]
+jobs:
+  Twingate-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Twingate
+        run: |
+          echo "deb [trusted=yes] https://packages.twingate.com/apt/ /" | sudo tee /etc/apt/sources.list.d/twingate.list
+          sudo apt update -yq
+          sudo apt install -yq twingate
+      - name: Setup twingate
+        run: echo $TWINGATE_SERVICE_KEY | sudo twingate setup --headless=-
+      - name: Start twingate
+        run: sudo twingate start
+      - name: Twingate status
+        run: twingate status
+
+      - name: Access a secure resource
+        env:
+          TEST_URL: https://business.prod.beamreachinc.int
+        run: |
+          echo Calling $TEST_URL 🚀
+          curl -v $TEST_URL
+
+      - run: echo "SUCCESS!!! 🤩 This job's status is ${{ job.status }}."
