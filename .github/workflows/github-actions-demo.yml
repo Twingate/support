@@ -18,7 +18,7 @@ jobs:
 
       - name: Access a secure resource
         env:
-          TEST_URL: https://business.prod.beamreachinc.int
+          TEST_URL: http://business.prod.beamreachinc.int/
         run: |
           echo Calling $TEST_URL 🚀
           curl -v $TEST_URL
