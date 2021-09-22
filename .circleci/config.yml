@@ -1,0 +1,44 @@
+version: 2.1
+
+jobs:
+  headless_client:
+    machine:
+      image: ubuntu-2004:202107-02
+    steps:
+      - run:
+          name: Start Twingate
+          command: |
+            # install
+            echo "deb [trusted=yes] https://packages.twingate.com/apt/ /" | sudo tee /etc/apt/sources.list.d/twingate.list
+            sudo apt update -yq
+            sudo apt install -yq twingate
+
+            # setup and start
+            echo "$SERVICE_KEY" | base64 --decode | sudo twingate setup --headless=-
+            sudo twingate start
+
+            # collect logs
+            sudo journalctl -u twingate --no-pager | tail -n 20
+
+      - run:
+          name: Test Access
+          command: |
+            # test protected resource
+            curl -v -m 10 "$TEST_URL" > /dev/null
+
+            # test public resource
+            curl -v -m 10 http://twingate.com > /dev/null
+
+      - run:
+          name: Stop Twingate
+          command: |
+            # stop
+            sudo twingate stop
+
+            # test public resource after stop
+            curl -v -m 10 http://twingate.com > /dev/null
+
+workflows:
+  test:
+    jobs:
+      - headless_client
