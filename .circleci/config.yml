@@ -27,7 +27,7 @@ jobs:
             curl -v -m 10 "$TEST_URL" > /dev/null
 
             # test public resource
-  reorganize            curl -v -m 10 http://twingate.com > /dev/null
+            curl -v -m 10 http://twingate.com > /dev/null
 
       - run:
           name: Stop Twingate
