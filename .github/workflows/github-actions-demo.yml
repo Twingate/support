@@ -9,15 +9,19 @@ jobs:
           echo "deb [trusted=yes] https://packages.twingate.com/apt/ /" | sudo tee /etc/apt/sources.list.d/twingate.list
           sudo apt update -yq
           sudo apt install -yq twingate
+
       - name: Setup twingate
         env:
           TWINGATE_SERVICE_KEY: ${{ secrets.SERVICE_KEY }}
         run: echo $TWINGATE_SERVICE_KEY | sudo twingate setup --headless=-
+
       - name: Start twingate
         run: sudo twingate start
-      - name: Twingate status
+
+      - name: (optional) Twingate status
         run: twingate status
-      - name: Twingate logs
+
+      - name: (optional) Twingate logs
         run: journalctl -u twingate  
 
       - name: Access a secure resource
@@ -35,3 +39,6 @@ jobs:
           curl -v $TEST_URL
 
       - run: echo "SUCCESS!!! 🤩 This job's status is ${{ job.status }}."
+
+      - name: Stop Twingate
+        run: sudo twingate stop
