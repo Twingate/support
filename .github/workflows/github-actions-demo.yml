@@ -10,6 +10,8 @@ jobs:
           sudo apt update -yq
           sudo apt install -yq twingate
       - name: Setup twingate
+        env:
+          TWINGATE_SERVICE_KEY: ${{ secrets.SERVICE_KEY }}
         run: echo $TWINGATE_SERVICE_KEY | sudo twingate setup --headless=-
       - name: Start twingate
         run: sudo twingate start
@@ -21,6 +23,13 @@ jobs:
       - name: Access a secure resource
         env:
           TEST_URL: http://business.prod.beamreachinc.int/
+        run: |
+          echo Calling $TEST_URL 🚀
+          curl -v $TEST_URL
+
+      - name: Access a public resource
+        env:
+          TEST_URL: https://www.twingate.com/
         run: |
           echo Calling $TEST_URL 🚀
           curl -v $TEST_URL
