@@ -15,6 +15,8 @@ jobs:
         run: sudo twingate start
       - name: Twingate status
         run: twingate status
+      - name: Twingate logs
+        run: journalctl -u twingate  
 
       - name: Access a secure resource
         env:
