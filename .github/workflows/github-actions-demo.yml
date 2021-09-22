@@ -10,13 +10,12 @@ jobs:
           sudo apt update -yq
           sudo apt install -yq twingate
 
-      - name: Setup twingate
+      - name: Setup and start Twingate
         env:
           TWINGATE_SERVICE_KEY: ${{ secrets.SERVICE_KEY }}
-        run: echo $TWINGATE_SERVICE_KEY | sudo twingate setup --headless=-
-
-      - name: Start twingate
-        run: sudo twingate start
+        run: |
+          echo $TWINGATE_SERVICE_KEY | sudo twingate setup --headless=-
+          sudo twingate start
 
       - name: (optional) Twingate status
         run: twingate status
