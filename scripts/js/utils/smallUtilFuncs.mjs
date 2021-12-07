@@ -90,5 +90,5 @@ export function setLastConnectedOnUser(nodeObj) {
         if (!lastConnectedMap.has(d.userLabel)) lastConnectedMap.set(d.userLabel, d.lastConnectedAt)
     });
 
-    for (const user of allNodes.User) user.lastConnectedAt = lastConnectedMap.get(user.email);
+    for (const user of nodeObj.User) user.lastConnectedAt = lastConnectedMap.get(user.email);
 }
