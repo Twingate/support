@@ -16,6 +16,7 @@ export class TwingateApiClient {
     }
 
     static Schema = {
+        // BEGIN types
         "ResourceAddress": {
             isNode: false,
             fields: [
@@ -47,6 +48,8 @@ export class TwingateApiClient {
                 {name: "end", type: "integer"}
             ]
         },
+        // END types
+        // BEGIN nodes
         "User": {
             isNode: true,
             fields: [
@@ -76,7 +79,7 @@ export class TwingateApiClient {
         "Resource": {
             isNode: true,
             fields: [
-                {name: "name", type: "string", isLabel: true},
+                {name: "name", type: "string", isLabel: true, canQuery: true},
                 {name: "createdAt", type: "datetime"},
                 {name: "updatedAt", type: "datetime"},
                 {name: "isActive", type: "boolean"},
@@ -130,6 +133,7 @@ export class TwingateApiClient {
                 {name: "manufacturerName", type: "string"}
             ]
         }
+        // END nodes
     }
 
     /**
@@ -379,7 +383,7 @@ export class TwingateApiClient {
     }
 
     async fetchAllRemoteNetworks(opts) {
-        return this._fetchAllNodesOfType("RemoteNetworks", opts);
+        return this._fetchAllNodesOfType("RemoteNetwork", opts);
     }
 
     async fetchAllGroups(opts) {
@@ -529,12 +533,14 @@ export class TwingateApiClient {
             mappingFnStatements.push(...typeProps.dateTimeFields.map(f=>`    if ( obj["${f}"] != undefined ) obj["${f}"] = new Date(obj["${f}"]);`));
             mappingFnStatements.push(`}`);
             mappingFnStatements.push(`if ( opts.mapNodeToId === true ) {`);
-            mappingFnStatements.push(...typeProps.nodeFields.map(f=>`    if ( obj["${f}"] != undefined ) { obj["${f}Id"] = obj["${f}"].id; delete obj["${f}"];}`));
+            mappingFnStatements.push(...typeProps.nodeFields.map(f=>`    if ( obj["${f}"] != undefined ) obj["${f}Id"] = obj["${f}"].id;`));
             mappingFnStatements.push(`}`);
             mappingFnStatements.push(`if ( opts.mapNodeToLabel === true ) {`);
-            mappingFnStatements.push(...typeProps.nodeFields.map(f=>`    if ( obj["${f}"] != undefined ) { obj["${f}Label"] = obj["${f}"].${TwingateApiClient.Schema[typeProps.fieldsByName[f].typeName].labelField}; delete obj["${f}"];}`));
+            mappingFnStatements.push(...typeProps.nodeFields.map(f=>`    if ( obj["${f}"] != undefined ) obj["${f}Label"] = obj["${f}"].${TwingateApiClient.Schema[typeProps.fieldsByName[f].typeName].labelField};`));
             mappingFnStatements.push(`}`);
-
+            mappingFnStatements.push(`if ( opts.mapNodeToLabel || opts.mapNodeToId ) {`);
+            mappingFnStatements.push(...typeProps.nodeFields.map(f=>`    delete obj["${f}"];`));
+            mappingFnStatements.push(`}`);
             mappingFnStatements.push(`if ( opts.flattenObjectFields === true ) {`);
             for ( const f of typeProps.objectFields ) {
                 mappingFnStatements.push(`    if ( obj["${f}"] !== undefined ) {`);
