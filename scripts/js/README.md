@@ -21,7 +21,7 @@ Thereafter you can execute the binary without deno: ``./tg --help``
 
 ``./tg.js --help``
 
-``./tg.js groups --help``
+``./tg.js group --help``
 
 **Example - Export Excel file**
 
@@ -29,4 +29,4 @@ Thereafter you can execute the binary without deno: ``./tg --help``
 
 **Example - List resources**
 
-``./tg.js resources list``
+``./tg.js resource list``
