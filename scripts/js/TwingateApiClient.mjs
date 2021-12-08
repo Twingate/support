@@ -453,6 +453,45 @@ export class TwingateApiClient {
     }
 
 
+    async loadCompleteGroup(name) {
+        let networkName = this.networkName, apiKey = this.apiKey;
+        const groupsQuery = "query Groups($name:String){groups(filter:{name:{eq:$name}}){edges{node{id name users{pageInfo{hasNextPage endCursor}edges{node{id}}}resources{pageInfo{hasNextPage endCursor}edges{node{id}}}}}}}";
+        let groupsResponse = await this.exec(groupsQuery, {name} );
+        let numGroups = groupsResponse.groups.edges.length;
+        if ( numGroups != 1 ) {
+            console.warn(`Searching for group with name '${name}' returned ${numGroups} results.`)
+            return;
+        }
+
+        let group = groupsResponse.groups.edges[0].node;
+        let usersPageInfo = group.users.pageInfo;
+        group.userIds = group.users.edges.map ( e => e.node.id );
+        let resourcesPageInfo = group.resources.pageInfo;
+        group.resourceIds = group.resources.edges.map ( e => e.node.id );
+
+        while (usersPageInfo.hasNextPage === true) {
+            let userResults = await loadGroupUsers(networkName, apiKey, group.id, usersPageInfo.endCursor);
+            group.userIds.push(...userResults.ids);
+            usersPageInfo = userResults.pageInfo;
+        }
+
+        while (resourcesPageInfo.hasNextPage === true) {
+            let resourceResults = await loadGroupResources(networkName, apiKey, group.id, resourcesPageInfo.endCursor);
+            group.resourceIds.push(...resourceResults.ids);
+            resourcesPageInfo = resourceResults.pageInfo;
+        }
+
+        return group;
+    }
+
+
+    async createGroup(name, resourceIds, userIds) {
+        const createGroupQuery = "mutation CreateGroup($name:String!,$resourceIds:[ID],$userIds:[ID]){groupCreate(name:$name,resourceIds:$resourceIds,userIds:$userIds){entity{id}}}";
+        let groupsResponse = await this.exec(createGroupQuery, {name, resourceIds, userIds} );
+        return groupsResponse.entity;
+
+    }
+
     /**
      * Test whether a network name appears valid
      * @returns {boolean} -

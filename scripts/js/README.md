@@ -9,7 +9,7 @@ This is a command line application demonstrating various usages of the Twingate 
 **Setup**
 1. Obtain an API key from the Twingate Admin Console with at least read and write permissions
 2. Install [Deno](https://deno.land/#installation) for your platform.
-3. At the terminal execute ``deno run --allow-net --allow-read --allow-write --allow-run --unstable ./tg.js``.
+3. At the terminal execute ``./tg.js``.
 
 **Compilation**
 
@@ -19,14 +19,14 @@ Thereafter you can execute the binary without deno: ``./tg --help``
 
 **Example - Show command usage**
 
-``deno run --allow-net --allow-read --allow-write --allow-run --unstable ./tg.js --help``
+``./tg.js --help``
 
-``deno run --allow-net --allow-read --allow-write --allow-run --unstable ./tg.js groups --help``
+``./tg.js groups --help``
 
 **Example - Export Excel file**
 
-``deno run --allow-net --allow-read --allow-write --allow-run --unstable ./tg.js export``
+``./tg.js export``
 
 **Example - List resources**
 
-``deno run --allow-net --allow-read --allow-write --allow-run --unstable ./tg.js resources list``
+``./tg.js resources list``
