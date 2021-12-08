@@ -43,6 +43,7 @@ export async function loadNetworkAndApiKey(networkName = null) {
         let confFileData = await decryptData(await Deno.readFile(keyFilePath));
         let keyConf = JSON.parse(confFileData);
         networkName = networkName || keyConf["networkName"];
+        // TODO fix case of no network name + multiple apiKeys
         if ( typeof keyConf.apiKeys === "object" ) availableNetworks.push(...Object.keys(keyConf.apiKeys));
         if (networkName == null) throw new Error("Network missing");
         let apiKey = keyConf.apiKeys[networkName];
@@ -64,7 +65,7 @@ export async function loadNetworkAndApiKey(networkName = null) {
                 },
                 _version: TwingateApiClient.VERSION
             }
-            await Deno.writeFile(keyFilePath, await encryptData(JSON.stringify(keyConf)));
+            await Deno.writeFile(keyFilePath, await encryptData(JSON.stringify(keyConf)), {mode: 0o600});
             console.info("Configuration file saved.");
         }
         return {networkName, apiKey};
@@ -75,6 +76,7 @@ export function sortByTextField(arr, prop, defaultVal = "") {
     return arr.sort((a,b) => (a[prop]||defaultVal).localeCompare(b[prop]||defaultVal));
 }
 export function setLastConnectedOnUser(nodeObj) {
+    if ( !nodeObj.Device || !nodeObj.User ) return;
     const MIN_DATE = new Date(-8640000000000000);
     const lastConnectedMap = new Map();
     nodeObj.Device

@@ -6,7 +6,7 @@ import {Table} from "https://deno.land/x/cliffy/table/mod.ts";
 import {Command} from "https://deno.land/x/cliffy/command/mod.ts";
 
 const listCmdConfig = {
-    "resources": {
+    "resource": {
         typeName: "Resource",
         fetchFn: "fetchAllResources",
         listFieldOpts: {
@@ -15,7 +15,7 @@ const listCmdConfig = {
             }
         }
     },
-    "groups": {
+    "group": {
         typeName: "Group",
         fetchFn: "fetchAllGroups",
         listFieldOpts: {
@@ -23,24 +23,22 @@ const listCmdConfig = {
             resources: {ignore: true}
         }
     },
-    "users": {
+    "user": {
         typeName: "User",
         fetchFn: "fetchAllUsers",
-        listFieldOpts: {
-        }
+        listFieldOpts: {}
     },
-    "networks": {
+    "network": {
         typeName: "RemoteNetwork",
         fetchFn: "fetchAllRemoteNetworks",
         listFieldOpts: {
             resources: {ignore: true}
         }
     },
-    "connectors": {
+    "connector": {
         typeName: "Connector",
         fetchFn: "fetchAllConnectors",
-        listFieldOpts: {
-        }
+        listFieldOpts: {}
     }
 }
 
@@ -48,7 +46,7 @@ function getListCommand(name) {
     let config = listCmdConfig[name];
     return new Command()
         .arguments("")
-        .description("")
+        .description(`Get list of ${name}s`)
         .action(async (options) => {
             let networkName = null;
             let apiKey = null;
@@ -71,7 +69,7 @@ function getListCommand(name) {
             }
             let schema = TwingateApiClient.Schema[config.typeName];
             let records = await client[config.fetchFn](configForCli);
-            if ( schema.labelField != null ) records = sortByTextField(records, schema.labelField);
+            if (schema.labelField != null) records = sortByTextField(records, schema.labelField);
             let ws = XLSX.utils.json_to_sheet(records);
             let [header, ...recordsArr] = XLSX.utils.sheet_to_json(ws, {raw: false, header: 1});
 
@@ -84,34 +82,10 @@ function getListCommand(name) {
         });
 }
 
-export const resourcesCmd = new Command()
-    .arguments("")
-    .description("")
-    .command("list", getListCommand("resources"))
-;
-
-
-export const groupsCmd = new Command()
-    .arguments("")
-    .description("")
-    .command("list", getListCommand("groups"))
-;
-
-
-export const usersCmd = new Command()
-    .arguments("")
-    .description("")
-    .command("list", getListCommand("users"))
-;
-
-export const remoteNetworksCmd = new Command()
-    .arguments("")
-    .description("")
-    .command("list", getListCommand("networks"))
-;
-
-export const connectorsCmd = new Command()
-    .arguments("")
-    .description("")
-    .command("list", getListCommand("connectors"))
-;
+export function getTopLevelCommand(name) {
+    return new Command()
+        .arguments('')
+        .description(`Twingate ${name}s`)
+        .command("list", getListCommand(name))
+        ;
+}
