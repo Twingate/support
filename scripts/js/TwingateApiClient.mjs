@@ -497,8 +497,6 @@ export class TwingateApiClient {
      * @returns {boolean} -
      */
     static async testNetworkValid(networkName) {
-        // Assuming network is valid, an invalid API key should return a 403. Otherwise we can expect probably a 400
-        // since we provide no query on this request
         let url = ( networkName.indexOf('.') === -1 ) ? `https://${networkName}.twingate.com/api/graphql/?testNetworkValid` : `https://${networkName}/api/graphql/?testNetworkValid`;
         let rsp = await fetch(url);
         return rsp.status !== 404;
@@ -508,7 +506,7 @@ export class TwingateApiClient {
      * @returns {boolean} -
      */
     static async testApiKeyValid(networkName, apiKey) {
-        // Assuming network is valid, an invalid API key should return a 403. Otherwise we can expect probably a 400
+        // Assuming network is valid, an invalid API key should return a 401. Otherwise we can expect probably a 400
         // since we provide no query on this request
         let url = ( networkName.indexOf('.') === -1 ) ? `https://${networkName}.twingate.com/api/graphql/?testApiKeyValid` : `https://${networkName}/api/graphql/?testApiKeyValid`;
         let rsp = await fetch(url, {headers: {'X-API-KEY': apiKey}} );
