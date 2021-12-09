@@ -32,8 +32,8 @@ async function outputDot(client, options) {
         },
         "Group": {
             "connectionFields": ["users"],
-            "skipConnectionFn": (connectionField, record) => record.name == "Everyone" && connectionField == "users",
-            "skipNodeFn": ((group) => group.resources.length == 0),
+            "skipConnectionFn": (connectionField, record) => record.name === "Everyone" && connectionField === "users",
+            "skipNodeFn": ((group) => group.resources.length === 0),
             "nodeAttrs": (record, _ ) => ({
                 [attribute.fillcolor]: record.name === "Everyone"? "#ff0000" : "#0415A6",
                 [attribute.fontcolor]: "#ffffff"
