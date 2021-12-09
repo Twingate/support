@@ -534,7 +534,7 @@ export class TwingateApiClient {
                 typeProps.queryConnectionField = typeProps.queryConnectionField || `${typeProps.queryNodeField}s`;
 
                 let labelFieldArr = typeProps.fields.filter(f => f.isLabel);
-                if (labelFieldArr.length == 1) typeProps.labelField = labelFieldArr[0].name;
+                if (labelFieldArr.length === 1) typeProps.labelField = labelFieldArr[0].name;
                 else console.warn(`No label field found for type '${typeName}'!`);
             }
         }
@@ -553,7 +553,7 @@ export class TwingateApiClient {
                         stmts.push(...flattenStmtsFn(path, fieldDef));
                         break;
                     default:
-                        let flattenedPropName = path.map( (e, i) => (i == 0 ? e : _capitalise(e) ) );
+                        let flattenedPropName = path.map( (e, i) => (i === 0 ? e : _capitalise(e) ) );
                         stmts.push(`obj["${flattenedPropName.join("")}"] = obj.${path.join(".")};`);
                         break;
                 }

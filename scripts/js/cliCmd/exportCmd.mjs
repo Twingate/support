@@ -8,7 +8,7 @@ import {
     digraph,
     renderDot,
     toDot
-} from "https://deno.land/x/graphviz/mod.ts";
+} from "https://x.nest.land/graphviz@0.3.0/mod.ts";
 
 async function outputDot(client, options) {
 
@@ -20,27 +20,56 @@ async function outputDot(client, options) {
             mapNodeToId: true
         }
     }
+    /*
     const allNodes = await client.fetchAll(configForGraph);
-
+*/
+    const allNodes = JSON.parse(await Deno.readTextFile("./beamReachNetwork.json"));
     let nodeCache = {};
 
     const graphConfig = {
+        "User": {
+            "nodeAttrs": {
+                [attribute.fillcolor]: "#ECECEC"
+            }
+        },
         "Group": {
             "connectionFields": ["users"],
             "skipConnectionFn": (connectionField, record) => record.name == "Everyone" && connectionField == "users",
-            "skipNodeFn": ((group) => group.resources.length == 0)
+            "skipNodeFn": ((group) => group.resources.length == 0),
+            "nodeAttrs": (record, _ ) => ({
+                [attribute.fillcolor]: record.name === "Everyone"? "#ff0000" : "#0415A6",
+                [attribute.fontcolor]: "#ffffff"
+            })
         },
         "Resource": {
             //"nodeFields": ["remoteNetwork"],
-            "connectionFields": ["groups"]
+            "connectionFields": ["groups"],
+            "nodeAttrs": (record, _ ) => ({
+                [attribute.fillcolor]: "#ffffff",
+                [attribute.color]: "#000000",
+                [attribute.fontcolor]: "#000000"
+            })
         },
         "RemoteNetwork": {
-            "connectionFields": ["resources"]
+            "connectionFields": ["resources"],
+            "nodeAttrs": {
+                [attribute.fillcolor]: "#000000",
+                [attribute.fontcolor]: "#ffffff"
+            }
         }
     }
     const G = digraph("G", (g) => {
         g.set("rankdir", "LR");
 
+        g.node({
+            [attribute.border]: 1,
+            [attribute.shape]: "Mrecord",
+            [attribute.style]: "filled",
+            [attribute.color]: "#ffffff"
+        });
+        g.edge({
+            [attribute.arrowhead]: "none"
+        });
 
         for (const [typeName, records] of Object.entries(allNodes)) {
             graphConfig[typeName] = graphConfig[typeName] || {};
@@ -51,10 +80,12 @@ async function outputDot(client, options) {
                 typeGraphConfig.skipNodeFn = typeGraphConfig.skipNodeFn || ((_) => false);
                 for (const record of records) {
                     if (typeGraphConfig.skipNodeFn(record)) continue;
-                    nodeCache[record.id] = typeGraph.node(record.id, {
+                    let attrs = Object.assign({}, {
                         [attribute.label]: record[typeDef.labelField],
                         typeName
-                    });
+                    }, typeof typeGraphConfig.nodeAttrs == "function" ? typeGraphConfig.nodeAttrs(record, typeName): typeGraphConfig.nodeAttrs) ;
+
+                    nodeCache[record.id] = typeGraph.node(record.id, attrs);
                 }
             });
         }
