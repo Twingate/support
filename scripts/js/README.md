@@ -34,7 +34,7 @@ Thereafter you can execute the binary without deno: ``./tg --help``
 
 ``./tg.js export --format png``
 
-*Note: Requires `dot` from the [GraphViz](https://graphviz.gitlab.io) package to be [installed](https://graphviz.gitlab.io/download/#executable-packages) and available on your path.*
+*Note: Requires the [GraphViz](https://graphviz.gitlab.io) package to be [installed](https://graphviz.gitlab.io/download/#executable-packages) and available on your path.*
 
 **Example - List resources**
 
