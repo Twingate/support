@@ -21,6 +21,7 @@ async function outputDot(client, options) {
         }
     }
     const allNodes = await client.fetchAll(configForGraph);
+
     let nodeCache = {};
 
     const graphConfig = {
@@ -59,14 +60,17 @@ async function outputDot(client, options) {
         g.set("rankdir", "LR");
 
         g.node({
-            [attribute.border]: 1,
+            [attribute.border]: 2,
             [attribute.shape]: "Mrecord",
             [attribute.style]: "filled",
-            [attribute.color]: "#ffffff"
+            [attribute.color]: "#ffffff",
+            [attribute.fontname]: "Sans-Serif"
         });
         g.edge({
             [attribute.arrowhead]: "none",
-            [attribute.penwidth]: 2
+            [attribute.penwidth]: 2,
+            [attribute.color]: "#000000CC",
+            [attribute.style]: "tapered"
         });
 
         for (const [typeName, records] of Object.entries(allNodes)) {
