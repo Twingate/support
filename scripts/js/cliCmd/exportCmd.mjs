@@ -20,10 +20,7 @@ async function outputDot(client, options) {
             mapNodeToId: true
         }
     }
-    /*
     const allNodes = await client.fetchAll(configForGraph);
-*/
-    const allNodes = JSON.parse(await Deno.readTextFile("./beamReachNetwork.json"));
     let nodeCache = {};
 
     const graphConfig = {
@@ -68,7 +65,8 @@ async function outputDot(client, options) {
             [attribute.color]: "#ffffff"
         });
         g.edge({
-            [attribute.arrowhead]: "none"
+            [attribute.arrowhead]: "none",
+            [attribute.penwidth]: 2
         });
 
         for (const [typeName, records] of Object.entries(allNodes)) {
