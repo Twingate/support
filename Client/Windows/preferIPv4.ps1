@@ -8,7 +8,7 @@
 
 function Set-PreferIPv4 () {
     try {
-      If ((Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters' | Select-Object -ExpandProperty 'DisabledComponents' -ErrorAction SilentlyContinue) -eq 32) {
+      if ((Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters' | Select-Object -ExpandProperty 'DisabledComponents' -ErrorAction SilentlyContinue) -eq 32) {
           Write-Host "IPv4 is already preferred over IPv6. No further actions necessary." -ForegroundColor Green
       }
       elseif (Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters' | Select-Object -ExpandProperty 'DisabledComponents' -ErrorAction SilentlyContinue) {
@@ -28,7 +28,11 @@ function Set-PreferIPv4 () {
       }
     }
     catch {
-      Write-Output "Ran into an issue: $($PSItem.ToString())"    
+      if ($($PSItem.ToString()) -eq "Requested registry access is not allowed.") {
+        Write-Output "Ran into an issue: $($PSItem.ToString())"   
+      } 
+      else {
+        Write-Output "Ran into an issue: $($PSItem.ToString())"    
       }
 }
 Set-PreferIPv4
