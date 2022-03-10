@@ -29,7 +29,7 @@ function Set-PreferIPv4 () {
     }
     catch {
       if ($($PSItem.ToString()) -eq "Requested registry access is not allowed.") {
-        Write-Output "Ran into an issue: $($PSItem.ToString())"   
+        Write-Output "Ran into an issue: powershell must be ran as administrator"   
       } 
       else {
         Write-Output "Ran into an issue: $($PSItem.ToString())"    
