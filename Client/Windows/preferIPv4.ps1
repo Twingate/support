@@ -19,7 +19,7 @@ function Set-PreferIPv4 () {
       else {
         try {
           New-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters\" -Name "DisabledComponents" -Value 0x20 -PropertyType "DWord" -ErrorAction Stop
-          Write-Host "Setting IPv4 preference over IPv6."  -ForegroundColor Green
+          Write-Host "Setting IPv4 preference over IPv6." -ForegroundColor Green
           Write-Host "Reboot required for changes to take effect." -ForegroundColor Red
         }
         catch {
@@ -37,7 +37,7 @@ function Set-PreferIPv4 () {
         Write-Output "Error: $($PSItem.ToString()) Powershell must be ran as administrator to run this script." -ForegroundColor Red  
       } 
       else {
-        Write-Output "Error: $($PSItem.ToString())"    
+        Write-Output "Error: $($PSItem.ToString())" -ForegroundColor Red
       }
     }
 }
