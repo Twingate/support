@@ -23,16 +23,22 @@ function Set-PreferIPv4 () {
           Write-Host "Reboot required for changes to take effect." -ForegroundColor Yellow
         }
         catch {
-          Write-Output "Ran into an issue: $($PSItem.ToString())"    
+            if ($($PSItem.ToString()) -eq "Requested registry access is not allowed.") {
+                Write-Output "Error: $($PSItem.ToString()) Powershell must be ran as administrator to run this script."   
+              } 
+              else {
+                Write-Output "Error: $($PSItem.ToString())"    
+              }
         }
       }
     }
     catch {
       if ($($PSItem.ToString()) -eq "Requested registry access is not allowed.") {
-        Write-Output "Ran into an issue: powershell must be ran as administrator"   
+        Write-Output "Error: $($PSItem.ToString()) Powershell must be ran as administrator to run this script."   
       } 
       else {
-        Write-Output "Ran into an issue: $($PSItem.ToString())"    
+        Write-Output "Error: $($PSItem.ToString())"    
       }
+    }
 }
 Set-PreferIPv4
