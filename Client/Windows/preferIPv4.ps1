@@ -12,7 +12,7 @@ function Set-PreferIPv4 () {
           Write-Host "IPv4 is already preferred over IPv6. No further actions necessary." -ForegroundColor Green
       }
       elseif (Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters' | Select-Object -ExpandProperty 'DisabledComponents' -ErrorAction SilentlyContinue) {
-        Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters\" -Name "DisabledComponents" -Value 0x20 -ErrorAction Stop
+        Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters\" -Name "DisabledComponents" -Value 0x20 -PropertyType "DWord" -ErrorAction Stop
         Write-Host "Setting IPv4 preference over IPv6."  -ForegroundColor Green
         Write-Host "Reboot required for changes to take effect." -ForegroundColor Red
       }
